@@ -186,24 +186,7 @@ const updateStatusEvents = async (req) => {
     } = req.body;
 
     const result = await Events.findById(id)
-    // const result = await Events.findOneAndUpdate(
-    //     { _id: id },
-    //     {
-    //         title,
-    //         date,
-    //         about,
-    //         tagline,
-    //         venueName,
-    //         keyPoint,
-    //         statusEvent,
-    //         tickets,
-    //         image,
-    //         category,
-    //         talent,
-    //     },
-    //     { new: true, runValidators: true }
-    // );
-    // jika id result false / null maka akan menampilkan error `Tidak ada pembicara dengan id` yang dikirim client
+
     if (!result) throw new NotFoundError(`Tidak ada acara dengan id :  ${id}`);
     result.statusEvent = statusEvent
     result.save()
