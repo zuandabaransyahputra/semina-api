@@ -84,6 +84,7 @@ const createEvents = async (req) => {
         image,
         category,
         talent,
+        organizer: req.user.organizer
     });
 
     return result;
@@ -162,6 +163,7 @@ const updateEvents = async (req) => {
             image,
             category,
             talent,
+            organizer: req.user.organizer
         },
         { new: true, runValidators: true }
     );

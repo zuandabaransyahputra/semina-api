@@ -15,7 +15,7 @@
       "role": "designer"
     },
     "event": {
-      "$oid": "62cfeacaa7c00d1978e1530f"
+      "$oid": "62d27d8680c702c29f7d22df"
     },
     "totalPay": 10000,
     "totalOrderTicket": 1,
@@ -30,6 +30,9 @@
     ],
     "participant": {
       "$oid": "623ebb89b3e202071335910b"
+    },
+    "organizer": {
+      "$oid": "62d276b0b834dfe305dd264b"
     },
     "payment": "623eb95b15919466fa3b53b2",
     "createdAt": {
@@ -53,6 +56,9 @@
         "$numberLong": "1657756800000"
       }
     },
+    "organizer": {
+      "$oid": "62d276b0b834dfe305dd264b"
+    },
     "personalDetail": {
       "firstName": "ega",
       "lastName": "liayando",
@@ -60,7 +66,7 @@
       "role": "designer"
     },
     "event": {
-      "$oid": "62cfeacaa7c00d1978e1530f"
+      "$oid": "62d27e9e347559b9cf7311e7"
     },
     "totalPay": 20000,
     "totalOrderTicket": 2,

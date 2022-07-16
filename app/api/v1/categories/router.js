@@ -7,6 +7,12 @@ const {
 } = require('../../../middlewares/auth');
 
 router.get(
+    '/categories',
+    authenticateUser,
+    authorizeRoles('organizer'),
+    index
+);
+router.get(
     '/categories/:id',
     authenticateUser,
     authorizeRoles('organizer'),

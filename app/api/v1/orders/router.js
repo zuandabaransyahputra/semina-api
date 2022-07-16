@@ -5,10 +5,10 @@ const {
     authenticateUser,
     authorizeRoles,
 } = require('../../../middlewares/auth');
+
 router.get(
     '/orders',
     authenticateUser,
-    authorizeRoles('organizer', 'admin'),
     authorizeRoles('organizer', 'admin', 'owner'),
     index
 );

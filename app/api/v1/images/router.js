@@ -11,10 +11,11 @@ const {
 router.post(
     '/images',
     authenticateUser,
-    authorizeRoles('organizer'),
+    authorizeRoles('organizer', 'admin'),
     upload.single('avatar'),
     create
 );
-router.get('/', authenticateUser,
+router.get('/images', authenticateUser,
     authorizeRoles('owner'), getAll)
+
 module.exports = router;

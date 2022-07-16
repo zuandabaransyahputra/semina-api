@@ -37,4 +37,11 @@ router.post(
     create
 );
 
+router.put(
+    '/events/:id/status',
+    authenticateUser,
+    authorizeRoles('organizer'),
+    updateStatusEvent
+)
+
 module.exports = router;
