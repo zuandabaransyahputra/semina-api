@@ -1,14 +1,15 @@
 const Participant = require('../../api/v1/participants/model');
 const Events = require('../../api/v1/events/model');
 const Orders = require('../../api/v1/orders/model');
-const { otpMail } = require('../email');
+const Payments = require('../../api/v1/payments/model');
+const { otpMail, invoice } = require('../email');
 const {
     BadRequestError,
     NotFoundError,
     UnauthorizedError,
 } = require('../../errors');
 
-const { createTokenUser, createJWT } = require('../../utils');
+const { createJWT, createTokenParticipant } = require('../../utils');
 
 const signupParticipant = async (req) => {
     const { firstName, lastName, email, password, role } = req.body;
@@ -85,7 +86,7 @@ const signinParticipant = async (req) => {
         throw new UnauthorizedError('Invalid Credentials');
     }
 
-    const token = createJWT({ payload: createTokenUser(result, 'participant') });
+    const token = createJWT({ payload: createTokenParticipant(result) });
 
     return token;
 };
@@ -115,6 +116,71 @@ const getAllOrders = async (req) => {
     return result;
 };
 
+const checkoutOrder = async (req) => {
+    const { event, personalDetail, payment, tickets } = req.body;
+
+    const checkingEvent = await Events.findOne({ _id: event });
+    if (!checkingEvent) {
+        throw new NotFoundError('Tidak ada acara dengan id : ' + event);
+    }
+
+    const checkingPayment = await Payments.findOne({ _id: payment });
+
+    if (!checkingPayment) {
+        throw new NotFoundError(
+            'Tidak ada metode pembayaran dengan id :' + payment
+        );
+    }
+
+    let totalPay = 0,
+        totalOrderTicket = 0;
+    await tickets.forEach((tic) => {
+        checkingEvent.tickets.forEach((ticket) => {
+            if (tic.ticketCategories.type === ticket.type) {
+                if (tic.sumTicket > ticket.stock) {
+                    throw new NotFoundError('Stock event tidak mencukupi');
+                } else {
+                    ticket.stock -= tic.sumTicket;
+                    totalOrderTicket += tic.sumTicket;
+                    totalPay += tic.ticketCategories.price * tic.sumTicket;
+                }
+            }
+        });
+    });
+
+    await checkingEvent.save();
+
+    const historyEvent = {
+        title: checkingEvent.title,
+        date: checkingEvent.date,
+        about: checkingEvent.about,
+        tagline: checkingEvent.tagline,
+        keyPoint: checkingEvent.keyPoint,
+        venueName: checkingEvent.venueName,
+        tickets: tickets,
+        image: checkingEvent.image,
+        category: checkingEvent.category,
+        talent: checkingEvent.talent,
+        organizer: checkingEvent.organizer,
+    };
+
+    const result = new Orders({
+        date: new Date(),
+        personalDetail: personalDetail,
+        totalPay,
+        totalOrderTicket,
+        orderItems: tickets,
+        participant: req.participant.id,
+        event,
+        historyEvent,
+        payment,
+    });
+
+    await result.save();
+    await invoice(personalDetail.email, result);
+    return result;
+};
+
 module.exports = {
     signupParticipant,
     activateParticipant,
@@ -122,4 +188,5 @@ module.exports = {
     getAllEvents,
     getOneEvent,
     getAllOrders,
+    checkoutOrder
 };

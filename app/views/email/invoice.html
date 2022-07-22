@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semina</title>
+  <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="
+        font-family: Helvetica, Arial, sans-serif;
+        min-width: 1000px;
+        overflow: auto;
+        line-height: 2;
+      ">
+    <div style="margin: 50px auto; width: 70%; padding: 20px 0">
+      <div style="border-bottom: 1px solid #eee">
+        <a href="" style="
+              font-size: 1.4em;
+              color: #00466a;
+              text-decoration: none;
+              font-weight: 600;
+            ">Semina</a>
+      </div>
+      <p style="font-size: 1.1em">Hi, {{personalDetail.firstName}}</p>
+      <h1>
+        Invoice:
+      </h1>
+      <table>
+        <tr>
+          <th>Full Name</th>
+          <th>Event Title</th>
+          <th>Venue Name</th>
+          <th>Total Order Ticket</th>
+          <th>Status Payment</th>
+          <th>Total Price</th>
+        </tr>
+        <tr>
+          <td>{{personalDetail.firstName}} {{personalDetail.lastName}}</td>
+          <td>{{historyEvent.title}}</td>
+          <td>{{historyEvent.venueName}}</td>
+          <td>{{totalOrderTicket}}</td>
+          <td>{{status}}</td>
+          <td>{{totalPay}}</td>
+        </tr>
+      </table>
+      <p style="font-size: 0.9em">Regards,<br />Semina</p>
+      <hr style="border: none; border-top: 1px solid #eee" />
+      <div style="
+            float: right;
+            padding: 8px 0;
+            color: #aaa;
+            font-size: 0.8em;
+            line-height: 1;
+            font-weight: 300;
+          ">
+        <p>Semina Inc</p>
+        <p>1234567 Zuan</p>
+        <p>Zuanda</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
