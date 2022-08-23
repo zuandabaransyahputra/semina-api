@@ -32,8 +32,8 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-    res.send('welcome to semina');
-});
+    res.send("Welcome to semina api")
+})
 
 app.use(v1, categoriesRouter);
 app.use(v1, imagesRouter);
