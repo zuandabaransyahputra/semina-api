@@ -35,6 +35,9 @@ app.use(cookieParser());
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/', (req, res) => {
+    res.send("Welcome to semina api")
+})
 
 app.use(v1, categoriesRouter);
 app.use(v1, imagesRouter);
@@ -47,9 +50,6 @@ app.use(v1, paymentsRouter);
 app.use(v1, userRefreshTokenRouter);
 app.use('/api/v1', participantsRouter);
 
-app.get('/', (req, res) => {
-    res.send("Welcome to semina api")
-})
 
 // middlewares
 app.use(notFoundMiddleware);
