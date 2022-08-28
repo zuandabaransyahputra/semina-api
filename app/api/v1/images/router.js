@@ -10,8 +10,6 @@ const {
 
 router.post(
     '/images',
-    authenticateUser,
-    authorizeRoles('organizer', 'admin'),
     upload.single('avatar'),
     create
 );
