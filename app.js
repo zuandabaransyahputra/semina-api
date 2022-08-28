@@ -3,6 +3,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors')
+const db = require('./app/db')
+
+db()
 
 const app = express();
 const port = process.env.PORT || 9000
@@ -52,8 +55,8 @@ app.get('/', (req, res) => {
 app.use(notFoundMiddleware);
 app.use(handleErrorMiddleware);
 
-// app.listen(port, () => {
-//     console.log(`Server berhasil dijalankan pada port: ${port}`)
-// })
+app.listen(port, () => {
+    console.log(`Server berhasil dijalankan pada port: ${port}`)
+})
 
-module.exports = app;
+// module.exports = app;
