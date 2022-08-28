@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cors = require('cors')
 
 const app = express();
+const port = process.env.PORT || 9000
 
 // router
 const categoriesRouter = require('./app/api/v1/categories/router');
@@ -51,4 +52,8 @@ app.get('/', (req, res) => {
 app.use(notFoundMiddleware);
 app.use(handleErrorMiddleware);
 
-module.exports = app;
+app.listen(port, () => {
+    console.log(`Server berhasil dijalankan pada port: ${port}`)
+})
+
+// module.exports = app;
