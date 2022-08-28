@@ -52,8 +52,8 @@ app.get('/', (req, res) => {
 app.use(notFoundMiddleware);
 app.use(handleErrorMiddleware);
 
-app.listen(port, () => {
-    console.log(`Server berhasil dijalankan pada port: ${port}`)
-})
+// app.listen(port, () => {
+//     console.log(`Server berhasil dijalankan pada port: ${port}`)
+// })
 
-// module.exports = app;
+module.exports = app;
