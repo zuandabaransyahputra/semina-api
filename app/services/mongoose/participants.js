@@ -2,20 +2,18 @@ const Participant = require('../../api/v1/participants/model');
 const Events = require('../../api/v1/events/model');
 const Orders = require('../../api/v1/orders/model');
 const Payments = require('../../api/v1/payments/model');
-
+const { otpMail, invoice } = require('../email');
 const {
     BadRequestError,
     NotFoundError,
     UnauthorizedError,
 } = require('../../errors');
-const { createTokenParticipant, createJWT } = require('../../utils');
 
-const { otpMail } = require('../mail');
+const { createJWT, createTokenParticipant } = require('../../utils');
 
 const signupParticipant = async (req) => {
     const { firstName, lastName, email, password, role } = req.body;
 
-    // jika email dan status tidak aktif
     let result = await Participant.findOne({
         email,
         status: 'tidak aktif',
@@ -40,9 +38,7 @@ const signupParticipant = async (req) => {
         });
     }
     await otpMail(email, result);
-
-    delete result._doc.password;
-    delete result._doc.otp;
+    delete result._doc.password
 
     return result;
 };
@@ -57,15 +53,12 @@ const activateParticipant = async (req) => {
 
     if (check && check.otp !== otp) throw new BadRequestError('Kode otp salah');
 
-    const result = await Participant.findByIdAndUpdate(
-        check._id,
-        {
-            status: 'aktif',
-        },
-        { new: true }
-    );
+    const result = await Participant.findByIdAndUpdate(check._id, {
+        status: 'aktif',
+    }, { new: true, runValidators: true });
 
-    delete result._doc.password;
+    delete result._doc.password
+    // delete result._doc.otp
 
     return result;
 };
@@ -108,27 +101,21 @@ const getAllEvents = async (req) => {
 };
 
 const getOneEvent = async (req) => {
-    const { id } = req.params;
-    const result = await Events.findOne({ _id: id })
+    const result = await Events.findOne({ _id: req.params.id })
         .populate('category')
         .populate({ path: 'talent', populate: 'image' })
         .populate('image');
 
-    if (!result) throw new NotFoundError(`Tidak ada acara dengan id :  ${id}`);
+    if (!result) throw new NotFoundError(`Tidak ada acara dengan id :  ${req.params.id}`);
 
     return result;
 };
 
 const getAllOrders = async (req) => {
-    console.log(req.participant);
     const result = await Orders.find({ participant: req.participant.id });
     return result;
 };
 
-/**
- * Tugas Send email invoice
- * TODO: Ambil data email dari personal detail
- *  */
 const checkoutOrder = async (req) => {
     const { event, personalDetail, payment, tickets } = req.body;
 
@@ -154,7 +141,6 @@ const checkoutOrder = async (req) => {
                     throw new NotFoundError('Stock event tidak mencukupi');
                 } else {
                     ticket.stock -= tic.sumTicket;
-
                     totalOrderTicket += tic.sumTicket;
                     totalPay += tic.ticketCategories.price * tic.sumTicket;
                 }
@@ -191,14 +177,7 @@ const checkoutOrder = async (req) => {
     });
 
     await result.save();
-    return result;
-};
-
-const getAllPaymentByOrganizer = async (req) => {
-    const { organizer } = req.params;
-
-    const result = await Payments.find({ organizer: organizer });
-
+    await invoice(personalDetail.email, result);
     return result;
 };
 
@@ -209,6 +188,5 @@ module.exports = {
     getAllEvents,
     getOneEvent,
     getAllOrders,
-    checkoutOrder,
-    getAllPaymentByOrganizer,
+    checkoutOrder
 };
